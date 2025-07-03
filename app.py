@@ -1,19 +1,8 @@
 from flask import Flask, request, render_template
-from scheduler import schedule_user, run_loop
-import threading
+from scheduler import schedule_user
 import os
 
 app = Flask(__name__)
-scheduler_started = False  # global flag to ensure scheduler starts once
-
-@app.before_request
-def start_scheduler_once():
-    global scheduler_started
-    if not scheduler_started:
-        print("[APP] Starting scheduler loop...")
-        thread = threading.Thread(target=run_loop, daemon=True)
-        thread.start()
-        scheduler_started = True
 
 @app.route('/')
 def index():
