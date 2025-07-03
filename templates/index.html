@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Schedule Sheet to WhatsApp</title>
+</head>
+<body>
+  <h2>Schedule Screenshot</h2>
+  <form method="POST" action="/register">
+    Google Sheet URL:<br>
+    <input type="text" name="sheet_url" required
+      value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816"><br><br>
+
+    WhatsApp Number:<br>
+    <input type="text" name="whatsapp_number" required><br><br>
+
+    Time(s) (comma separated HH:MM):<br>
+    <input type="text" name="times" required placeholder="e.g. 13:45,18:30"><br><br>
+
+    <button type="submit">Schedule</button>
+  </form>
+</body>
+</html>

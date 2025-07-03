@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: sheet-to-whatsapp
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: TWILIO_SID
+        value: ACc3fde97d7042c86e79ee95b5a7b4d994
+      - key: TWILIO_AUTH
+        value: b55b4635ccc4236e820aee64549237a2
+      - key: TWILIO_WHATSAPP
+        value: whatsapp:+14155238886
+      - key: IMGBB_API_KEY
+        value: 2580b68e77fff585b1db3e91b468a70d
