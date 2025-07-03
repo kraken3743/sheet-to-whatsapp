@@ -23,10 +23,13 @@ def register():
         print(f"[ERROR] in /register: {e}")
         return "Failed to schedule.", 500
 
-# ✅ Start the scheduler thread immediately — no matter what
-threading.Thread(target=run_loop, daemon=True).start()
+# THIS ensures the scheduler starts only when Flask is ready
+@app.before_first_request
+def activate_scheduler():
+    print("[APP] Starting scheduler loop...")
+    thread = threading.Thread(target=run_loop, daemon=True)
+    thread.start()
 
-# Start the Flask app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port)
