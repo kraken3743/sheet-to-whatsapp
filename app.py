@@ -4,6 +4,16 @@ import threading
 import os
 
 app = Flask(__name__)
+scheduler_started = False  # global flag to ensure scheduler starts once
+
+@app.before_request
+def start_scheduler_once():
+    global scheduler_started
+    if not scheduler_started:
+        print("[APP] Starting scheduler loop...")
+        thread = threading.Thread(target=run_loop, daemon=True)
+        thread.start()
+        scheduler_started = True
 
 @app.route('/')
 def index():
@@ -22,13 +32,6 @@ def register():
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
         return "Failed to schedule.", 500
-
-# THIS ensures the scheduler starts only when Flask is ready
-@app.before_first_request
-def activate_scheduler():
-    print("[APP] Starting scheduler loop...")
-    thread = threading.Thread(target=run_loop, daemon=True)
-    thread.start()
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
