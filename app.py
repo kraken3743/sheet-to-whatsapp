@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
-from scheduler import schedule_user
+import threading
+from scheduler import schedule_user, run_loop
 import os
 
 app = Flask(__name__)
@@ -23,5 +24,6 @@ def register():
         return "Failed to schedule.", 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    threading.Thread(target=run_loop, daemon=True).start()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

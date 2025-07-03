@@ -1,14 +1,7 @@
 services:
   - type: web
-    name: sheet-to-whatsapp-ui
+    name: sheet-to-whatsapp
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
-    plan: free
-
-  - type: worker
-    name: whatsapp-scheduler
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python run_scheduler.py
     plan: free
