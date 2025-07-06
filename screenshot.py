@@ -12,7 +12,7 @@ def take_screenshot(sheet_url):
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1600")
 
-        # Set binary location for Chrome (Railway installs it here)
+        # Set binary path for Railway
         options.binary_location = "/usr/bin/chromium"
 
         driver = uc.Chrome(options=options)
