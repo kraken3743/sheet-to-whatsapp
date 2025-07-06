@@ -1,8 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from PIL import Image
 import time
-import os
 
 def take_screenshot(sheet_url):
     options = Options()
@@ -11,12 +11,11 @@ def take_screenshot(sheet_url):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1600")
     options.add_argument("--force-device-scale-factor=0.75")
-    options.binary_location = "/usr/bin/chromium"  # Use Chromium path in Railway
+    options.binary_location = "/usr/bin/chromium"
 
-    driver = webdriver.Chrome(
-        executable_path="/usr/bin/chromedriver",  # Use preinstalled chromedriver
-        options=options
-    )
+    # Use Service instead of executable_path
+    service = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=service, options=options)
 
     driver.get(sheet_url)
     print("[SCREENSHOT] Waiting for sheet to load...")
@@ -27,10 +26,10 @@ def take_screenshot(sheet_url):
 
     screenshot_path = "full_sheet.png"
     driver.save_screenshot(screenshot_path)
-    print(f"[SCREENSHOT] Full page saved to {screenshot_path}")
     driver.quit()
+    print(f"[SCREENSHOT] Full page saved to {screenshot_path}")
 
-    # Crop only the area from A1 to J31
+    # Crop
     image = Image.open(screenshot_path)
     crop_box = (20, 130, 1000, 900)
     cropped_image = image.crop(crop_box)
