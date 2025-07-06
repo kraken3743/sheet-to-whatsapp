@@ -13,4 +13,17 @@ Note:
 - You can change cropping in `screenshot.py` if needed
 - Timezone: All times are IST (converted to UTC internally)
 
+for pushing updated screenshot.py(proper size-crop_box = (20, 130, 1000, 900))
+
+git add screenshot.py
+git commit -m "Update screenshot.py with better crop and Railway support"
+git push
+
+for updating instructions.txt
+
+git add instructions.txt 
+git commit -m "📄 Add instructions.txt for usage guide"
+git push
+
+
 Author: Shashwat Amrit
