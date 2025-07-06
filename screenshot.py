@@ -1,6 +1,7 @@
 import undetected_chromedriver as uc
 from PIL import Image
 import time
+import os
 
 def take_screenshot(sheet_url):
     print("[SCREENSHOT] Launching Chrome headless browser...")
@@ -10,6 +11,9 @@ def take_screenshot(sheet_url):
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1600")
+
+        # Set binary location for Chrome (Railway installs it here)
+        options.binary_location = "/usr/bin/chromium"
 
         driver = uc.Chrome(options=options)
         driver.get(sheet_url)
