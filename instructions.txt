@@ -1,0 +1,16 @@
+How to use Sheet-to-WhatsApp (Cloud Deployment)
+
+1. Visit: https://<your-app>.onrender.com
+2. Enter:
+   - Google Sheet URL (must be public or shared with view access)
+   - WhatsApp Number in format +91XXXXXXXXXX
+   - Time(s) in HH:MM (IST) format, comma-separated (e.g., 09:00,21:00)
+
+3. At the selected time(s), a screenshot of the given sheet will be sent to WhatsApp.
+
+Note:
+- You must have joined the Twilio Sandbox by sending the join code to +14155238886
+- You can change cropping in `screenshot.py` if needed
+- Timezone: All times are IST (converted to UTC internally)
+
+Author: Shashwat Amrit
