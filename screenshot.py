@@ -12,21 +12,23 @@ def take_screenshot(sheet_url):
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1600")
 
-        # Set binary path for Railway
+        # ✅ Correct binary path for Railway
         options.binary_location = "/usr/bin/chromium"
 
         driver = uc.Chrome(options=options)
         driver.get(sheet_url)
         time.sleep(7)
 
-        driver.save_screenshot("full_sheet.png")
+        full = "full_sheet.png"
+        driver.save_screenshot(full)
         driver.quit()
+        print(f"[SCREENSHOT] Full page saved to {full}")
 
-        image = Image.open("full_sheet.png")
-        crop_box = (20, 130, 1000, 900)
+        image = Image.open(full)
+        crop_box = (70, 150, 1100, 1000)  # Adjusted crop box
         cropped = image.crop(crop_box)
         cropped.save("sheet.png")
-        print("[SCREENSHOT] Cropped screenshot saved to sheet.png")
+        print(f"[SCREENSHOT] Cropped screenshot saved to sheet.png")
         return "sheet.png"
     except Exception as e:
         print(f"[ERROR] Screenshot failed: {e}")
