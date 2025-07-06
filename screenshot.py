@@ -1,39 +1,29 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 from PIL import Image
 import time
-import os
 
 def take_screenshot(sheet_url):
+    print("[SCREENSHOT] Launching Chrome headless browser...")
     try:
-        print("[SCREENSHOT] Launching Chrome headless browser...")
-        options = Options()
-        options.add_argument("--headless=new")
+        options = uc.ChromeOptions()
+        options.headless = True
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1600")
 
-        driver = webdriver.Chrome(options=options)
-        print(f"[SCREENSHOT] Navigating to: {sheet_url}")
+        driver = uc.Chrome(options=options)
         driver.get(sheet_url)
         time.sleep(7)
-        driver.execute_script("window.scrollTo(0, 0);")
-        time.sleep(1)
 
-        full = "full_sheet.png"
-        driver.save_screenshot(full)
-        print(f"[SCREENSHOT] Full page saved to {full}")
+        driver.save_screenshot("full_sheet.png")
         driver.quit()
 
-        image = Image.open(full)
-        crop_box = (70, 150, 1000, 900)  # A1:J31 (adjust if needed)
+        image = Image.open("full_sheet.png")
+        crop_box = (70, 150, 1000, 900)
         cropped = image.crop(crop_box)
-        cropped_path = "sheet.png"
-        cropped.save(cropped_path)
-        print(f"[SCREENSHOT] Cropped screenshot saved to {cropped_path}")
-
-        return cropped_path
-
+        cropped.save("sheet.png")
+        print("[SCREENSHOT] Cropped screenshot saved to sheet.png")
+        return "sheet.png"
     except Exception as e:
         print(f"[ERROR] Screenshot failed: {e}")
         return None
