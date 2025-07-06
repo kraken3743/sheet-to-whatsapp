@@ -23,7 +23,7 @@ def take_screenshot(sheet_url):
         driver.quit()
 
         image = Image.open("full_sheet.png")
-        crop_box = (70, 150, 1000, 900)
+        crop_box = (20, 130, 1000, 900)
         cropped = image.crop(crop_box)
         cropped.save("sheet.png")
         print("[SCREENSHOT] Cropped screenshot saved to sheet.png")
