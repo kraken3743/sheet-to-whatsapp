@@ -40,9 +40,9 @@ def schedule_user(sheet_url, number, times):
 def run_loop():
     print("[SCHEDULER] Running scheduler loop...")
     while True:
-        # Show current time in both UTC and IST for debug clarity
         now_utc = datetime.utcnow().strftime("%H:%M")
         now_ist = (datetime.utcnow() + timedelta(hours=5, minutes=30)).strftime("%H:%M")
         print(f"[TIME] UTC: {now_utc}, IST: {now_ist}")
         schedule.run_pending()
-        time.sleep(60)  # Check once every minute
+        time.sleep(60)
+
