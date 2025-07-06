@@ -25,7 +25,7 @@ def take_screenshot(sheet_url):
         print(f"[SCREENSHOT] Full page saved to {full}")
 
         image = Image.open(full)
-        crop_box = (20, 130, 1000, 900)  # Adjusted crop box
+        crop_box = (20, 130, 1000, 900)  # new crop box
         cropped = image.crop(crop_box)
         cropped.save("sheet.png")
         print(f"[SCREENSHOT] Cropped screenshot saved to sheet.png")
