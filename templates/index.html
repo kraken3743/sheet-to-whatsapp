@@ -4,18 +4,16 @@
   <meta charset="UTF-8">
   <title>Schedule Sheet to WhatsApp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #333;
     }
 
     .container {
@@ -41,7 +39,8 @@
     }
 
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    input[type="date"] {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -77,6 +76,9 @@
 
       <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
+
+      <label>Start Date (YYYY-MM-DD):</label>
+      <input type="date" name="start_date" required>
 
       <label>Time(s) (comma separated HH:MM):</label>
       <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
