@@ -5,10 +5,6 @@ from PIL import Image
 import time
 
 def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
-    print(f"[SCREENSHOT] Starting capture for: {sheet_url}")
-    print(f"[SCREENSHOT] Crop area: {crop_box}")
-
-    # Set Chrome options
     options = Options()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -17,39 +13,25 @@ def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
     options.add_argument("--force-device-scale-factor=0.75")
     options.binary_location = "/usr/bin/chromium"
 
-    # Launch Chrome
     service = Service("/usr/bin/chromedriver")
     driver = webdriver.Chrome(service=service, options=options)
 
-    try:
-        driver.get(sheet_url)
-        print("[SCREENSHOT] Waiting for Google Sheet to load...")
-        time.sleep(7)  # Wait for Google Sheet to render
+    driver.get(sheet_url)
+    print("[SCREENSHOT] Waiting for sheet to load...")
+    time.sleep(7)
 
-        # Scroll to top
-        driver.execute_script("window.scrollTo(0, 0);")
-        time.sleep(1)
+    driver.execute_script("window.scrollTo(0, 0);")
+    time.sleep(1)
 
-        # Capture full screenshot
-        full_path = "full_sheet.png"
-        driver.save_screenshot(full_path)
-        print(f"[SCREENSHOT] Full page saved to {full_path}")
-
-    except Exception as e:
-        print(f"[ERROR] Failed to capture screenshot: {e}")
-        driver.quit()
-        return None
-
+    screenshot_path = "full_sheet.png"
+    driver.save_screenshot(screenshot_path)
     driver.quit()
+    print(f"[SCREENSHOT] Full page saved to {screenshot_path}")
 
-    # Crop the screenshot
-    try:
-        image = Image.open(full_path)
-        cropped = image.crop(crop_box)
-        cropped_path = "sheet.png"
-        cropped.save(cropped_path)
-        print(f"[SCREENSHOT] Cropped screenshot saved to {cropped_path}")
-        return cropped_path
-    except Exception as e:
-        print(f"[ERROR] Cropping failed: {e}")
-        return None
+    image = Image.open(screenshot_path)
+    cropped_image = image.crop(crop_box)
+    cropped_image_path = "sheet.png"
+    cropped_image.save(cropped_image_path)
+    print(f"[SCREENSHOT] Cropped screenshot saved to {cropped_image_path}")
+
+    return cropped_image_path
