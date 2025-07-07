@@ -11,29 +11,25 @@
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: auto;
     }
 
     .container {
-      background: white;
-      padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 900px;
-      box-sizing: border-box;
       display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
       justify-content: center;
+      align-items: flex-start;
+      padding: 50px;
     }
 
-    .form-section {
-      flex: 1;
-      min-width: 300px;
+    .form-box {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 20px;
     }
 
     h2 {
@@ -52,7 +48,7 @@
     input[type="number"],
     input[type="date"] {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 1em;
@@ -79,7 +75,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="form-section">
+    <div class="form-box">
       <h2>Schedule Screenshot</h2>
       <form method="POST" action="/register">
         <label>Google Sheet URL:</label>
@@ -113,7 +109,7 @@
       </form>
     </div>
 
-    <div class="form-section">
+    <div class="form-box">
       <h2>Cancel Schedule</h2>
       <form method="POST" action="/cancel">
         <label>WhatsApp Number:</label>
