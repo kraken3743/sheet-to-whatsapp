@@ -22,24 +22,30 @@ def cancel_user(number):
         print(f"[CANCEL] Schedule cancelled for {number}")
 
 def run_loop():
-    print("[SCHEDULER] Loop started...")
+    print("[SCHEDULER] Background loop starting...")
+
     while True:
-        now = datetime.datetime.now()
-        today_str = now.strftime("%Y-%m-%d")
-        current_time = now.strftime("%H:%M")
+        try:
+            now = datetime.datetime.now()
+            today_str = now.strftime("%Y-%m-%d")
+            current_time = now.strftime("%H:%M")
+            print(f"[SCHEDULER] Tick {now.strftime('%H:%M:%S')}")
 
-        for number, user in list(users.items()):
-            start = user["start_date"]
-            end = user["end_date"]
-            if today_str < start or today_str > end:
-                continue  # skip outside date range
+            for number, user in list(users.items()):
+                start = user["start_date"]
+                end = user["end_date"]
+                if today_str < start or today_str > end:
+                    continue  # skip outside date range
 
-            if current_time in user["times"]:
-                print(f"[SEND] Triggering for {number} at {current_time}")
-                try:
-                    path = take_screenshot(user["sheet_url"], user["crop_box"])
-                    send_whatsapp_image(number, path)
-                except Exception as e:
-                    print(f"[ERROR] while sending to {number}: {e}")
+                if current_time in user["times"]:
+                    print(f"[SEND] Triggering for {number} at {current_time}")
+                    try:
+                        path = take_screenshot(user["sheet_url"], user["crop_box"])
+                        send_whatsapp_image(number, path)
+                    except Exception as e:
+                        print(f"[ERROR] Sending failed for {number}: {e}")
 
-        time.sleep(1)
+            time.sleep(1)
+        except Exception as e:
+            print(f"[SCHEDULER ERROR] {e}")
+            time.sleep(2)

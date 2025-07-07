@@ -1,6 +1,6 @@
+import threading
 from flask import Flask, request, render_template
 from scheduler import schedule_user, cancel_user, run_loop
-import threading
 import os
 
 app = Flask(__name__)
@@ -18,7 +18,6 @@ def register():
         start_date = data['start_date']
         end_date = data['end_date']
         times = [t.strip() for t in data['times'].split(',') if t.strip()]
-
         crop_box = (
             int(data.get('crop_left', 20)),
             int(data.get('crop_top', 130)),
@@ -26,8 +25,6 @@ def register():
             int(data.get('crop_bottom', 900))
         )
 
-        print(f"[REGISTER] Sheet URL: {sheet_url}")
-        print(f"[REGISTER] Times: {times}")
         schedule_user(sheet_url, number, times, start_date, end_date, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
@@ -41,6 +38,7 @@ def cancel():
     return f"Cancelled all schedules for {number}"
 
 if __name__ == '__main__':
+    print("[MAIN] Starting scheduler thread...")
     threading.Thread(target=run_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
