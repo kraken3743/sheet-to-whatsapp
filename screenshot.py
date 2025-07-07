@@ -26,12 +26,12 @@ def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
     screenshot_path = "full_sheet.png"
     driver.save_screenshot(screenshot_path)
     driver.quit()
-    print(f"[SCREENSHOT] Full page saved to {screenshot_path}")
+    print(f"[SCREENSHOT] Saved full screenshot to {screenshot_path}")
 
     image = Image.open(screenshot_path)
     cropped_image = image.crop(crop_box)
     cropped_image_path = "sheet.png"
     cropped_image.save(cropped_image_path)
-    print(f"[SCREENSHOT] Cropped screenshot saved to {cropped_image_path}")
+    print(f"[SCREENSHOT] Saved cropped image to {cropped_image_path}")
 
     return cropped_image_path

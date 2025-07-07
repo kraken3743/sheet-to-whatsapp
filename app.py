@@ -25,7 +25,14 @@ def register():
         auto_disable = data.get('auto_disable') == 'on'
 
         crop_box = (crop_left, crop_top, crop_right, crop_bottom)
-        print(f"[REGISTER] {number}, Times: {times}, Start: {start_date}, Days: {num_days}, Crop: {crop_box}, Auto-disable: {auto_disable}")
+
+        print(f"[REGISTER] Number: {number}")
+        print(f"  Sheet URL: {sheet_url}")
+        print(f"  Start Date: {start_date}")
+        print(f"  Times: {times}")
+        print(f"  Days: {num_days}")
+        print(f"  Crop Box: {crop_box}")
+        print(f"  Auto-disable: {auto_disable}")
 
         schedule_user(sheet_url, number, times, start_date, num_days, crop_box, auto_disable)
         return "Scheduled successfully!"
