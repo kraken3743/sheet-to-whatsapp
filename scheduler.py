@@ -1,59 +1,46 @@
 import schedule
-import threading
 import time
 from datetime import datetime, timedelta
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
-all_jobs = {}
+tasks = {}
 
-def job_runner(sheet_url, number, crop_box):
-    try:
-        print(f"[JOB-RUNNER] Taking screenshot for {number}")
-        path = take_screenshot(sheet_url, crop_box=crop_box)
-        print(f"[JOB-RUNNER] Screenshot path: {path}")
-        send_whatsapp_image(number, path)
-    except Exception as e:
-        print(f"[ERROR] in job_runner: {e}")
+def schedule_user(sheet_url, number, times, crop_box, start_date, num_days):
+    end_date = (datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=num_days)).strftime("%Y-%m-%d")
 
-def schedule_user(sheet_url, number, times, start_date_str, num_days, crop_box, auto_disable):
-    cancel_user(number)  # avoid duplicates
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-    end_date = start_date + timedelta(days=num_days)
+    def job():
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        print(f"[DEBUG] Start: {start_date} | End: {end_date} | Now: {today}")
 
-    jobs = []
+        if start_date <= today <= end_date:
+            print(f"[JOB] Triggered for {number}")
+            screenshot_path = take_screenshot(sheet_url, crop_box)
+            send_whatsapp_image(number, screenshot_path)
+        elif today > end_date:
+            print(f"[JOB] Auto-cancelling {number} after end date {end_date}")
+            cancel_user(number)
 
     for t in times:
-        def make_job(time_slot):
-            def job():
-                now = datetime.now()
-                print(f"[JOB-CHECK] Checking for {number} at {now.strftime('%H:%M:%S')}")
+        job_instance = schedule.every().day.at(t.strip()).do(job)
+        if number not in tasks:
+            tasks[number] = []
+        tasks[number].append(job_instance)
 
-                if start_date.date() <= now.date() < end_date.date():
-                    print(f"[JOB-EXECUTE] Running job for {number} at {time_slot}")
-                    job_runner(sheet_url, number, crop_box)
-                elif auto_disable and now.date() >= end_date.date():
-                    print(f"[JOB-EXPIRE] Auto-cancelling expired job for {number}")
-                    cancel_user(number)
-            return job
-
-        job_obj = schedule.every().day.at(t).do(make_job(t))
-        jobs.append(job_obj)
-        print(f"[SCHEDULE] Scheduled {number} at {t} daily.")
-
-    all_jobs[number] = jobs
-    print(f"[DEBUG] Start: {start_date.date()} | End: {end_date.date()} | Now: {datetime.now().date()}")
+    print(f"[SCHEDULE] Scheduled {number} at {times} daily.")
 
 def cancel_user(number):
-    if number in all_jobs:
-        for j in all_jobs[number]:
-            schedule.cancel_job(j)
-        del all_jobs[number]
+    if number in tasks:
+        for job in tasks[number]:
+            schedule.cancel_job(job)
+        del tasks[number]
         print(f"[CANCEL] Cancelled all jobs for {number}")
+    else:
+        print(f"[CANCEL] No active jobs found for {number}")
 
 def run_loop():
-    print("[SCHEDULER] Starting loop...")
     while True:
         schedule.run_pending()
-        print("[SCHEDULER] Tick", datetime.now().strftime("%H:%M:%S"))
+        print(f"[SCHEDULER] Tick {datetime.now().strftime('%H:%M:%S')}")
         time.sleep(1)
