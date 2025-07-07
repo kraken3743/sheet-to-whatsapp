@@ -75,7 +75,8 @@
       <h2>Schedule Screenshot</h2>
       <form method="POST" action="/register">
         <label>Google Sheet URL:</label>
-        <input type="text" name="sheet_url" required>
+        <input type="text" name="sheet_url" required
+          value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
 
         <label>WhatsApp Number:</label>
         <input type="text" name="whatsapp_number" required>
@@ -94,9 +95,6 @@
 
         <label>Crop Bottom (px):</label>
         <input type="number" name="crop_bottom" value="900">
-
-        <label>Repeat for how many days?:</label>
-        <input type="number" name="num_days" value="3" min="1">
 
         <button type="submit">Schedule</button>
       </form>

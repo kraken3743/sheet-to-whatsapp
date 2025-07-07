@@ -14,10 +14,9 @@ def upload_image_to_imgbb(image_path):
                 files={"image": f}
             )
         image_url = res.json()["data"]["url"]
-        print(f"[UPLOAD] Uploaded to imgbb: {image_url}")
         return image_url
     except Exception as e:
-        print(f"[ERROR] Upload to imgbb failed: {e}")
+        print(f"[ERROR] Upload failed: {e}")
         return None
 
 def send_whatsapp_image(to_number, image_path):
@@ -26,7 +25,7 @@ def send_whatsapp_image(to_number, image_path):
 
     image_url = upload_image_to_imgbb(image_path)
     if not image_url:
-        print("[ERROR] No image URL. Aborting send.")
+        print("[ERROR] Upload failed. No image sent.")
         return
 
     try:
@@ -34,7 +33,7 @@ def send_whatsapp_image(to_number, image_path):
         message = client.messages.create(
             from_=os.getenv("TWILIO_WHATSAPP"),
             to=to_number,
-            body="Here is your updated Google Sheet 📊",
+            body="📊 Here is your scheduled Google Sheet update.",
             media_url=[image_url]
         )
         print(f"[WHATSAPP] Sent to {to_number} | SID: {message.sid}")
