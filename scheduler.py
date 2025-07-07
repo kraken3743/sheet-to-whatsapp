@@ -1,46 +1,45 @@
 import schedule
 import time
-from datetime import datetime, timedelta
+import datetime
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
-tasks = {}
+users = {}
 
-def schedule_user(sheet_url, number, times, crop_box, start_date, num_days):
-    end_date = (datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=num_days)).strftime("%Y-%m-%d")
-
-    def job():
-        now = datetime.now()
-        today = now.strftime("%Y-%m-%d")
-        print(f"[DEBUG] Start: {start_date} | End: {end_date} | Now: {today}")
-
-        if start_date <= today <= end_date:
-            print(f"[JOB] Triggered for {number}")
-            screenshot_path = take_screenshot(sheet_url, crop_box)
-            send_whatsapp_image(number, screenshot_path)
-        elif today > end_date:
-            print(f"[JOB] Auto-cancelling {number} after end date {end_date}")
-            cancel_user(number)
-
-    for t in times:
-        job_instance = schedule.every().day.at(t.strip()).do(job)
-        if number not in tasks:
-            tasks[number] = []
-        tasks[number].append(job_instance)
-
+def schedule_user(sheet_url, number, times, start_date, end_date, crop_box):
+    users[number] = {
+        "sheet_url": sheet_url,
+        "times": times,
+        "start_date": start_date,
+        "end_date": end_date,
+        "crop_box": crop_box
+    }
     print(f"[SCHEDULE] Scheduled {number} at {times} daily.")
 
 def cancel_user(number):
-    if number in tasks:
-        for job in tasks[number]:
-            schedule.cancel_job(job)
-        del tasks[number]
-        print(f"[CANCEL] Cancelled all jobs for {number}")
-    else:
-        print(f"[CANCEL] No active jobs found for {number}")
+    if number in users:
+        del users[number]
+        print(f"[CANCEL] Schedule cancelled for {number}")
 
 def run_loop():
+    print("[SCHEDULER] Loop started...")
     while True:
-        schedule.run_pending()
-        print(f"[SCHEDULER] Tick {datetime.now().strftime('%H:%M:%S')}")
+        now = datetime.datetime.now()
+        today_str = now.strftime("%Y-%m-%d")
+        current_time = now.strftime("%H:%M")
+
+        for number, user in list(users.items()):
+            start = user["start_date"]
+            end = user["end_date"]
+            if today_str < start or today_str > end:
+                continue  # skip outside date range
+
+            if current_time in user["times"]:
+                print(f"[SEND] Triggering for {number} at {current_time}")
+                try:
+                    path = take_screenshot(user["sheet_url"], user["crop_box"])
+                    send_whatsapp_image(number, path)
+                except Exception as e:
+                    print(f"[ERROR] while sending to {number}: {e}")
+
         time.sleep(1)

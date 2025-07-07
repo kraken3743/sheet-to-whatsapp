@@ -11,31 +11,34 @@
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      overflow: auto;
-    }
-
-    .wrapper {
       display: flex;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
-      padding: 40px;
-      gap: 30px;
-      flex-wrap: wrap;
+      overflow: auto;
     }
 
     .container {
       background: white;
-      padding: 30px;
+      padding: 40px 30px;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 600px;
+      max-width: 900px;
       box-sizing: border-box;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .form-section {
+      flex: 1;
+      min-width: 300px;
     }
 
     h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       color: #333366;
     }
 
@@ -75,8 +78,8 @@
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="container">
+  <div class="container">
+    <div class="form-section">
       <h2>Schedule Screenshot</h2>
       <form method="POST" action="/register">
         <label>Google Sheet URL:</label>
@@ -87,6 +90,9 @@
 
         <label>Start Date (YYYY-MM-DD):</label>
         <input type="date" name="start_date" required>
+
+        <label>End Date (YYYY-MM-DD):</label>
+        <input type="date" name="end_date" required>
 
         <label>Time(s) (comma separated HH:MM):</label>
         <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
@@ -103,17 +109,11 @@
         <label>Crop Bottom (px):</label>
         <input type="number" name="crop_bottom" value="900">
 
-        <label>Repeat for how many days?:</label>
-        <input type="number" name="num_days" value="30" min="1">
-
-        <label>Auto-disable after end date?:</label>
-        <input type="checkbox" name="auto_disable" checked>
-
         <button type="submit">Schedule</button>
       </form>
     </div>
 
-    <div class="container">
+    <div class="form-section">
       <h2>Cancel Schedule</h2>
       <form method="POST" action="/cancel">
         <label>WhatsApp Number:</label>
