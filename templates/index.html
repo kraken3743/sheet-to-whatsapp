@@ -40,7 +40,8 @@
       margin: 12px 0 5px;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -71,17 +72,40 @@
   <div class="container">
     <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
-      <label for="sheet_url">Google Sheet URL:</label>
-      <input type="text" name="sheet_url" required
-        value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
+      <label>Google Sheet URL:</label>
+      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/...">
 
-      <label for="whatsapp_number">WhatsApp Number:</label>
+      <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
 
-      <label for="times">Time(s) (comma separated HH:MM):</label>
+      <label>Time(s) (comma separated HH:MM):</label>
       <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
 
+      <label>Crop Left (px):</label>
+      <input type="number" name="crop_left" value="20">
+
+      <label>Crop Top (px):</label>
+      <input type="number" name="crop_top" value="130">
+
+      <label>Crop Right (px):</label>
+      <input type="number" name="crop_right" value="1000">
+
+      <label>Crop Bottom (px):</label>
+      <input type="number" name="crop_bottom" value="900">
+
+      <label>Repeat for how many days?:</label>
+      <input type="number" name="num_days" value="30" min="1">
+
       <button type="submit">Schedule</button>
+    </form>
+
+    <hr>
+
+    <h2>Cancel Schedule</h2>
+    <form method="POST" action="/cancel">
+      <label>WhatsApp Number:</label>
+      <input type="text" name="whatsapp_number" required>
+      <button type="submit">Cancel</button>
     </form>
   </div>
 </body>

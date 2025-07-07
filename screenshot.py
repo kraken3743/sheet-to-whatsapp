@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from PIL import Image
 import time
 
-def take_screenshot(sheet_url):
+def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
     options = Options()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -13,7 +13,6 @@ def take_screenshot(sheet_url):
     options.add_argument("--force-device-scale-factor=0.75")
     options.binary_location = "/usr/bin/chromium"
 
-    # Use Service instead of executable_path
     service = Service("/usr/bin/chromedriver")
     driver = webdriver.Chrome(service=service, options=options)
 
@@ -29,9 +28,7 @@ def take_screenshot(sheet_url):
     driver.quit()
     print(f"[SCREENSHOT] Full page saved to {screenshot_path}")
 
-    # Crop
     image = Image.open(screenshot_path)
-    crop_box = (20, 130, 1000, 900)
     cropped_image = image.crop(crop_box)
     cropped_image_path = "sheet.png"
     cropped_image.save(cropped_image_path)

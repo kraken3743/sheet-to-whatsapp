@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from scheduler import schedule_user, run_loop
+from scheduler import schedule_user, cancel_user, run_loop
 import threading
 import os
 
@@ -16,12 +16,32 @@ def register():
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
         times = data['times'].split(',')
-        print(f"[REGISTER] Received: {sheet_url}, {number}, {times}")
-        schedule_user(sheet_url, number, times)
+
+        crop_box = (
+            int(data.get("crop_left", 20)),
+            int(data.get("crop_top", 130)),
+            int(data.get("crop_right", 1000)),
+            int(data.get("crop_bottom", 900))
+        )
+
+        num_days = int(data.get("num_days", 30))
+        print(f"[REGISTER] {sheet_url}, {number}, {times}, crop: {crop_box}, days: {num_days}")
+
+        schedule_user(sheet_url, number, times, num_days, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
         return "Failed to schedule.", 500
+
+@app.route('/cancel', methods=['POST'])
+def cancel():
+    try:
+        number = request.form['whatsapp_number']
+        cancel_user(number)
+        return "Cancelled successfully!"
+    except Exception as e:
+        print(f"[ERROR] in /cancel: {e}")
+        return "Failed to cancel.", 500
 
 if __name__ == '__main__':
     threading.Thread(target=run_loop, daemon=True).start()

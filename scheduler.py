@@ -1,48 +1,44 @@
 import schedule
 import threading
 import time
-import os
 from datetime import datetime, timedelta
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
-def job(config):
-    print(f"[INFO] Triggering job for {config['whatsapp_number']}")
-    screenshot_path = take_screenshot(config["sheet_url"])
+scheduled_jobs = {}
 
-    if not screenshot_path or not os.path.exists(screenshot_path):
-        print(f"[ERROR] Screenshot not created. Skipping WhatsApp send.")
-        return
+def job_runner(sheet_url, whatsapp_number, crop_box):
+    print(f"[JOB] Running for {whatsapp_number}")
+    screenshot_path = take_screenshot(sheet_url, crop_box)
+    if screenshot_path:
+        send_whatsapp_image(whatsapp_number, screenshot_path)
 
-    send_whatsapp_image(config["whatsapp_number"], screenshot_path)
+def schedule_user(sheet_url, whatsapp_number, times, num_days=30, crop_box=(20, 130, 1000, 900)):
+    today = datetime.today().date()
 
-def convert_ist_to_utc(time_str):
-    """Converts IST time (HH:MM) to UTC for scheduling."""
-    try:
-        ist_time = datetime.strptime(time_str.strip(), "%H:%M")
-        utc_time = ist_time - timedelta(hours=5, minutes=30)
-        return utc_time.strftime("%H:%M")
-    except Exception as e:
-        print(f"[ERROR] Time conversion failed for {time_str}: {e}")
-        return None
+    for day_offset in range(num_days):
+        job_date = today + timedelta(days=day_offset)
+        for t in times:
+            hour, minute = map(int, t.strip().split(":"))
 
-def schedule_user(sheet_url, number, times):
-    config = {"sheet_url": sheet_url, "whatsapp_number": number}
-    for t in times:
-        utc_time = convert_ist_to_utc(t)
-        if utc_time:
-            print(f"[SCHEDULER] Scheduling {number} at {t.strip()} IST → {utc_time} UTC")
-            try:
-                schedule.every().day.at(utc_time).do(job, config).tag(number)
-            except Exception as e:
-                print(f"[ERROR] Scheduling failed for {t}: {e}")
+            def make_job():
+                return lambda: job_runner(sheet_url, whatsapp_number, crop_box)
+
+            job = schedule.every().day.at(f"{hour:02d}:{minute:02d}").do(make_job())
+            job.tag(whatsapp_number)
+            scheduled_jobs.setdefault(whatsapp_number, []).append(job)
+
+    print(f"[SCHEDULE] {whatsapp_number} scheduled for {num_days} days at {times}")
+
+def cancel_user(whatsapp_number):
+    jobs = schedule.get_jobs(tag=whatsapp_number)
+    for job in jobs:
+        schedule.cancel_job(job)
+    scheduled_jobs.pop(whatsapp_number, None)
+    print(f"[CANCEL] Jobs cancelled for {whatsapp_number}")
 
 def run_loop():
-    print("[SCHEDULER] Running scheduler loop...")
+    print("[SCHEDULER] Starting loop...")
     while True:
-        now_utc = datetime.utcnow().strftime("%H:%M")
-        now_ist = (datetime.utcnow() + timedelta(hours=5, minutes=30)).strftime("%H:%M")
-        print(f"[TIME] UTC: {now_utc}, IST: {now_ist}")
         schedule.run_pending()
-        time.sleep(60)
-
+        time.sleep(1)
