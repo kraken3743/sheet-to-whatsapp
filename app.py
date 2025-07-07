@@ -42,7 +42,11 @@ def cancel():
         print(f"[ERROR] in /cancel: {e}")
         return "Failed to cancel.", 500
 
+
+# Always run scheduler thread, even in Railway
+scheduler_thread = threading.Thread(target=run_loop, daemon=True)
+scheduler_thread.start()
+
 if __name__ == '__main__':
-    threading.Thread(target=run_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
