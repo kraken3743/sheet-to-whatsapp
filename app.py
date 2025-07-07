@@ -15,18 +15,15 @@ def register():
         data = request.form
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
-        times = data['times'].split(',')
-        start_date = data['start_date']
-        end_date = data['end_date']
-        crop_left = int(data['crop_left'])
-        crop_top = int(data['crop_top'])
-        crop_right = int(data['crop_right'])
-        crop_bottom = int(data['crop_bottom'])
-
-        crop_box = (crop_left, crop_top, crop_right, crop_bottom)
-
-        print(f"[REGISTER] Scheduled for {number} at {times}")
-        schedule_user(sheet_url, number, times, crop_box, start_date, end_date)
+        times = [t.strip() for t in data['times'].split(',')]
+        crop_box = (
+            int(data['crop_left']),
+            int(data['crop_top']),
+            int(data['crop_right']),
+            int(data['crop_bottom'])
+        )
+        num_days = int(data['num_days'])
+        schedule_user(sheet_url, number, times, crop_box, num_days)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
@@ -37,14 +34,12 @@ def cancel():
     try:
         number = request.form['whatsapp_number']
         cancel_schedule(number)
-        return "Schedule cancelled."
+        return "Cancelled successfully!"
     except Exception as e:
         print(f"[ERROR] in /cancel: {e}")
         return "Failed to cancel.", 500
 
-# Scheduler ALWAYS starts
-threading.Thread(target=run_loop, daemon=True).start()
-
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
+    threading.Thread(target=run_loop, daemon=True).start()
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
