@@ -1,35 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Schedule Sheet to WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      color: #333;
+      overflow-y: auto;
     }
 
     .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 30px;
+    }
+
+    .form-box {
       background: white;
-      padding: 40px 30px;
+      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       box-sizing: border-box;
     }
 
     h2 {
       text-align: center;
-      margin-bottom: 25px;
       color: #333366;
+      margin-top: 0;
     }
 
     label {
@@ -65,50 +71,72 @@
     button:hover {
       background-color: #1a5fd8;
     }
+
+    hr {
+      margin: 30px 0;
+      border: 0;
+      border-top: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Schedule Screenshot</h2>
-    <form method="POST" action="/register">
-      <label>Google Sheet URL:</label>
-      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/...">
+    <!-- LEFT SIDE: Schedule Form -->
+    <div class="form-box">
+      <h2>Schedule Screenshot</h2>
+      <form method="POST" action="/register">
+        <label>Google Sheet URL:</label>
+        <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/...">
 
-      <label>WhatsApp Number:</label>
-      <input type="text" name="whatsapp_number" required>
+        <label>WhatsApp Number:</label>
+        <input type="text" name="whatsapp_number" required>
 
-      <label>Start Date (YYYY-MM-DD):</label>
-      <input type="date" name="start_date" required>
+        <label>Start Date (YYYY-MM-DD):</label>
+        <input type="date" name="start_date" required>
 
-      <label>Time(s) (comma separated HH:MM):</label>
-      <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
+        <label>Time(s) (comma separated HH:MM):</label>
+        <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
 
-      <label>Crop Left (px):</label>
-      <input type="number" name="crop_left" value="20">
+        <label>Repeat for how many days?:</label>
+        <input type="number" name="num_days" value="30" min="1">
 
-      <label>Crop Top (px):</label>
-      <input type="number" name="crop_top" value="130">
+        <button type="submit">Schedule</button>
+      </form>
+    </div>
 
-      <label>Crop Right (px):</label>
-      <input type="number" name="crop_right" value="1000">
+    <!-- RIGHT SIDE: Crop Box + Cancel -->
+    <div class="form-box">
+      <h2>Crop Configuration</h2>
+      <form method="POST" action="/register">
+        <!-- Hidden fields for sheet data to avoid resending via right box -->
+        <input type="hidden" name="sheet_url" value="">
+        <input type="hidden" name="whatsapp_number" value="">
+        <input type="hidden" name="start_date" value="">
+        <input type="hidden" name="times" value="">
+        <input type="hidden" name="num_days" value="">
 
-      <label>Crop Bottom (px):</label>
-      <input type="number" name="crop_bottom" value="900">
+        <label>Crop Left (px):</label>
+        <input type="number" name="crop_left" value="20">
 
-      <label>Repeat for how many days?:</label>
-      <input type="number" name="num_days" value="30" min="1">
+        <label>Crop Top (px):</label>
+        <input type="number" name="crop_top" value="130">
 
-      <button type="submit">Schedule</button>
-    </form>
+        <label>Crop Right (px):</label>
+        <input type="number" name="crop_right" value="1000">
 
-    <hr>
+        <label>Crop Bottom (px):</label>
+        <input type="number" name="crop_bottom" value="900">
+      </form>
 
-    <h2>Cancel Schedule</h2>
-    <form method="POST" action="/cancel">
-      <label>WhatsApp Number:</label>
-      <input type="text" name="whatsapp_number" required>
-      <button type="submit">Cancel</button>
-    </form>
+      <hr>
+
+      <h2>Cancel Schedule</h2>
+      <form method="POST" action="/cancel">
+        <label>WhatsApp Number:</label>
+        <input type="text" name="whatsapp_number" required>
+        <button type="submit">Cancel</button>
+      </form>
+    </div>
   </div>
 </body>
 </html>
