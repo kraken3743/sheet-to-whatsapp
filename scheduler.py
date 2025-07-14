@@ -1,47 +1,40 @@
 import threading
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
 lock = threading.Lock()
 users = {}
 
-def schedule_user(sheet_url, number, start_date, end_date, times, crop_box):
+def schedule_user(sheet_url, number, time_str, crop_box):
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start_date": start_date,
-            "end_date": end_date,
-            "times": times,
-            "crop_box": crop_box
+            "time": time_str,
+            "crop_box": crop_box,
+            "sent": False
         }
-        print(f"[SCHEDULE] Scheduled {number} at {times} from {start_date} to {end_date}")
+        print(f"[SCHEDULE] {number} at {time_str}")
 
 def cancel_user(number):
     with lock:
         if number in users:
             del users[number]
-            print(f"[CANCEL] Canceled schedule for {number}")
+            print(f"[CANCEL] Schedule cancelled for {number}")
 
 def run_loop():
+    print("[SCHEDULER] Loop started")
     while True:
-        now = datetime.now()
-        current_time = now.strftime("%H:%M")
-        today = now.date()
-
+        now = datetime.now().strftime("%H:%M")
         with lock:
             for number, config in list(users.items()):
-                if today > config["end_date"]:
-                    print(f"[EXPIRE] {number} expired on {config['end_date']}")
-                    del users[number]
-                    continue
-
-                if today >= config["start_date"] and current_time in config["times"]:
-                    print(f"[SEND] Sending to {number} at {current_time}")
+                if not config["sent"] and now == config["time"]:
+                    print(f"[SEND] Sending to {number} at {now}")
                     try:
                         img_path = take_screenshot(config["sheet_url"], config["crop_box"])
                         send_whatsapp_image(number, img_path)
+                        config["sent"] = True
                     except Exception as e:
-                        print(f"[ERROR] Failed to send to {number}: {e}")
+                        print(f"[ERROR] Failed for {number}: {e}")
         time.sleep(1)
