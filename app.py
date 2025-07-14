@@ -16,17 +16,11 @@ def register():
         data = request.form
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
-        start_date = data['start_date']
-        end_date = data['end_date']
-        times_raw = [t.strip() for t in data['times'].split(',')]
-        times_24hr = []
 
-        for t in times_raw:
-            try:
-                dt = datetime.strptime(t, "%I:%M %p")
-                times_24hr.append(dt.strftime("%H:%M"))
-            except:
-                pass  # skip invalid time
+        start_date = datetime.strptime(data['start_date'], "%Y-%m-%d").date()
+        end_date = datetime.strptime(data['end_date'], "%Y-%m-%d").date()
+
+        times = [convert_to_24hr_format(t.strip()) for t in data['times'].split(',')]
 
         crop_box = (
             int(data['crop_left']),
@@ -35,8 +29,8 @@ def register():
             int(data['crop_bottom'])
         )
 
-        print(f"[REGISTER] {number} from {start_date} to {end_date} at {times_24hr} crop={crop_box}")
-        schedule_user(sheet_url, number, start_date, end_date, times_24hr, crop_box)
+        print(f"[REGISTER] {number} from {start_date} to {end_date} at {times} crop={crop_box}")
+        schedule_user(sheet_url, number, start_date, end_date, times, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
@@ -51,6 +45,10 @@ def cancel():
     except Exception as e:
         print(f"[ERROR] in /cancel: {e}")
         return "Failed to cancel.", 500
+
+def convert_to_24hr_format(time_str):
+    in_time = datetime.strptime(time_str, "%I:%M %p")
+    return in_time.strftime("%H:%M")
 
 if __name__ == '__main__':
     threading.Thread(target=run_loop, daemon=True).start()

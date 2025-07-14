@@ -11,8 +11,8 @@ def schedule_user(sheet_url, number, start_date, end_date, times, crop_box):
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start_date": datetime.strptime(start_date, "%Y-%m-%d").date(),
-            "end_date": datetime.strptime(end_date, "%Y-%m-%d").date(),
+            "start_date": start_date,
+            "end_date": end_date,
             "times": times,
             "crop_box": crop_box
         }
@@ -33,16 +33,15 @@ def run_loop():
         with lock:
             for number, config in list(users.items()):
                 if today > config["end_date"]:
-                    print(f"[AUTO REMOVE] {number} expired on {config['end_date']}")
+                    print(f"[EXPIRE] {number} expired on {config['end_date']}")
                     del users[number]
                     continue
 
                 if today >= config["start_date"] and current_time in config["times"]:
-                    print(f"[SEND] Triggering send for {number} at {current_time}")
+                    print(f"[SEND] Sending to {number} at {current_time}")
                     try:
                         img_path = take_screenshot(config["sheet_url"], config["crop_box"])
                         send_whatsapp_image(number, img_path)
                     except Exception as e:
-                        print(f"[ERROR] Failed to send screenshot to {number}: {e}")
-
-        time.sleep(60)  # Run every minute
+                        print(f"[ERROR] Failed to send to {number}: {e}")
+        time.sleep(1)

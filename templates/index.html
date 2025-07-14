@@ -3,114 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Schedule Sheet to WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #333;
+      padding: 40px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
     }
 
     .container {
-      background-color: white;
-      border-radius: 15px;
-      padding: 30px 40px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      max-width: 900px;
-      width: 100%;
-      display: flex;
-      gap: 30px;
-    }
-
-    .form-section {
-      flex: 1;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      width: 600px;
     }
 
     h2 {
       text-align: center;
-      color: #333366;
-      margin-bottom: 20px;
+      color: #2575fc;
     }
 
     label {
-      font-weight: 600;
+      margin-top: 15px;
+      font-weight: bold;
       display: block;
-      margin: 10px 0 5px;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 10px;
+      margin-top: 6px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
     }
 
     button {
-      margin-top: 15px;
+      margin-top: 25px;
       width: 100%;
       padding: 12px;
-      background: linear-gradient(135deg, #2575fc, #6a11cb);
-      border: none;
-      border-radius: 8px;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
       color: white;
+      border: none;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
     }
 
     button:hover {
-      background: linear-gradient(135deg, #1a5fd8, #4b3cc9);
+      background: linear-gradient(to right, #5b0dcc, #1d63e0);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="form-section">
-      <h2>Schedule Screenshot</h2>
-      <form method="POST" action="/register">
-        <label>Google Sheet URL:</label>
-        <input type="text" name="sheet_url" required
-               value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
+    <h2>Schedule Sheet Screenshot</h2>
+    <form method="POST" action="/register">
+      <label>Sheet URL:</label>
+      <input type="text" name="sheet_url" required
+             value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit#gid=909429816">
 
-        <label>WhatsApp Number:</label>
-        <input type="text" name="whatsapp_number" required>
+      <label>WhatsApp Number:</label>
+      <input type="text" name="whatsapp_number" required placeholder="+91XXXXXXXXXX">
 
-        <label>Start Date:</label>
-        <input type="date" name="start_date" required value="{{ datetime.utcnow().date() }}">
+      <label>Start Date:</label>
+      <input type="date" name="start_date" required value="{{ datetime.utcnow().date() }}">
 
-        <label>End Date:</label>
-        <input type="date" name="end_date" required>
+      <label>End Date:</label>
+      <input type="date" name="end_date" required>
 
-        <label>Time(s) (e.g., 09:30 AM, 06:00 PM):</label>
-        <input type="text" name="times" required placeholder="e.g. 09:30 AM, 06:00 PM">
+      <label>Times (e.g. 01:30 PM, 06:45 AM):</label>
+      <input type="text" name="times" required placeholder="Comma separated">
 
-        <label>Crop Left (px):</label>
-        <input type="number" name="crop_left" value="20">
+      <label>Crop Left:</label>
+      <input type="number" name="crop_left" value="20">
 
-        <label>Crop Top (px):</label>
-        <input type="number" name="crop_top" value="130">
+      <label>Crop Top:</label>
+      <input type="number" name="crop_top" value="130">
 
-        <label>Crop Right (px):</label>
-        <input type="number" name="crop_right" value="1000">
+      <label>Crop Right:</label>
+      <input type="number" name="crop_right" value="1000">
 
-        <label>Crop Bottom (px):</label>
-        <input type="number" name="crop_bottom" value="900">
+      <label>Crop Bottom:</label>
+      <input type="number" name="crop_bottom" value="900">
 
-        <button type="submit">Schedule</button>
-      </form>
-    </div>
-
-    <div class="form-section">
-      <h2>Cancel Schedule</h2>
-      <form method="POST" action="/cancel">
-        <label>WhatsApp Number:</label>
-        <input type="text" name="whatsapp_number" required>
-        <button type="submit">Cancel</button>
-      </form>
-    </div>
+      <button type="submit">Schedule</button>
+    </form>
   </div>
 </body>
 </html>
