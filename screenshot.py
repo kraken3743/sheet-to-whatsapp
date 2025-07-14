@@ -10,7 +10,6 @@ def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1600")
-    options.add_argument("--force-device-scale-factor=0.75")
     options.binary_location = "/usr/bin/chromium"
 
     service = Service("/usr/bin/chromedriver")
@@ -27,7 +26,7 @@ def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
 
     image = Image.open(screenshot_path)
     cropped_image = image.crop(crop_box)
-    final_path = "sheet.png"
-    cropped_image.save(final_path)
+    cropped_image_path = "sheet.png"
+    cropped_image.save(cropped_image_path)
 
-    return final_path
+    return cropped_image_path

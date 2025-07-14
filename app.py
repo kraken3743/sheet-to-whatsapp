@@ -18,13 +18,15 @@ def register():
         number = data['whatsapp_number']
         start_date = data['start_date']
         end_date = data['end_date']
-        times_raw = data['times'].split(',')
-        times = []
+        times_raw = [t.strip() for t in data['times'].split(',')]
+        times_24hr = []
 
         for t in times_raw:
-            t = t.strip().upper()
-            dt_obj = datetime.strptime(t, "%I:%M %p")
-            times.append(dt_obj.strftime("%H:%M"))
+            try:
+                dt = datetime.strptime(t, "%I:%M %p")
+                times_24hr.append(dt.strftime("%H:%M"))
+            except:
+                pass  # skip invalid time
 
         crop_box = (
             int(data['crop_left']),
@@ -33,7 +35,8 @@ def register():
             int(data['crop_bottom'])
         )
 
-        schedule_user(sheet_url, number, start_date, end_date, times, crop_box)
+        print(f"[REGISTER] {number} from {start_date} to {end_date} at {times_24hr} crop={crop_box}")
+        schedule_user(sheet_url, number, start_date, end_date, times_24hr, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
@@ -51,5 +54,6 @@ def cancel():
 
 if __name__ == '__main__':
     threading.Thread(target=run_loop, daemon=True).start()
+    print("[SCHEDULER] Loop started")
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
