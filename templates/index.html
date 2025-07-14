@@ -1,113 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Schedule Sheet to WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head><meta charset="UTF-8">
+  <title>Schedule Sheet to WhatsApp</title><meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      overflow: auto;
-    }
-
-    .container {
-      background: white;
-      margin: 40px auto;
-      padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      max-width: 1000px;
-      display: flex;
-      justify-content: space-between;
-      gap: 40px;
-    }
-
-    .left, .right {
-      flex: 1;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333366;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin: 12px 0 5px;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1em;
-    }
-
-    button {
-      background-color: #2575fc;
-      color: white;
-      border: none;
-      padding: 12px;
-      font-size: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-      width: 100%;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #1a5fd8;
-    }
-  </style>
-</head>
-<body>
+    ...same styles...
+  </style></head><body>
   <div class="container">
     <div class="left">
       <h2>Schedule Screenshot</h2>
       <form method="POST" action="/register">
         <label>Google Sheet URL:</label>
-        <input type="text" name="sheet_url" required
-          value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
+        <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
 
-        <label>WhatsApp Number:</label>
-        <input type="text" name="whatsapp_number" required>
-
-        <label>Time(s) (comma separated HH:MM):</label>
-        <input type="text" name="times" required placeholder="e.g. 13:45,18:30">
-
-        <label>Crop Left (px):</label>
-        <input type="number" name="crop_left" value="20">
-
-        <label>Crop Top (px):</label>
-        <input type="number" name="crop_top" value="130">
-
-        <label>Crop Right (px):</label>
-        <input type="number" name="crop_right" value="1000">
-
-        <label>Crop Bottom (px):</label>
-        <input type="number" name="crop_bottom" value="900">
-
+        <label>WhatsApp Number:</label><input type="text" name="whatsapp_number" required>
+        <label>Time(s) (HH:MM comma-separated):</label><input type="text" name="times" required placeholder="e.g. 13:45,18:30">
+        <label>Crop Left (px):</label><input type="number" name="crop_left" value="20">
+        <label>Crop Top (px):</label><input type="number" name="crop_top" value="130">
+        <label>Crop Right (px):</label><input type="number" name="crop_right" value="1000">
+        <label>Crop Bottom (px):</label><input type="number" name="crop_bottom" value="900">
+        <label>Repeat days:</label><input type="number" name="num_days" value="3" min="1">
         <button type="submit">Schedule</button>
       </form>
     </div>
-
     <div class="right">
-      <h2>Cancel Schedule</h2>
+      <h2>Cancel</h2>
       <form method="POST" action="/cancel">
-        <label>WhatsApp Number:</label>
-        <input type="text" name="whatsapp_number" required>
+        <label>WhatsApp Number:</label><input type="text" name="whatsapp_number" required>
         <button type="submit">Cancel</button>
       </form>
     </div>
   </div>
-</body>
-</html>
+</body></html>

@@ -5,36 +5,30 @@ from twilio.rest import Client
 
 load_dotenv()
 
-def upload_image_to_imgbb(image_path):
+def upload_image_to_imgbb(path):
     try:
-        with open(image_path, "rb") as f:
-            res = requests.post(
-                "https://api.imgbb.com/1/upload",
-                data={"key": os.getenv("IMGBB_API_KEY")},
-                files={"image": f}
-            )
+        with open(path,"rb") as f:
+            res = requests.post("https://api.imgbb.com/1/upload",
+                                 data={"key":os.getenv("IMGBB_API_KEY")},
+                                 files={"image":f})
         return res.json()["data"]["url"]
     except Exception as e:
-        print(f"[ERROR] Upload failed: {e}")
+        print(f"[ERROR] imgbb upload failed: {e}")
         return None
 
-def send_whatsapp_image(to_number, image_path):
-    if not to_number.startswith("whatsapp:"):
-        to_number = "whatsapp:" + to_number
+def send_whatsapp_image(to_num, img_path):
+    if not to_num.startswith("whatsapp:"):
+        to_num = "whatsapp:" + to_num
 
-    image_url = upload_image_to_imgbb(image_path)
-    if not image_url:
-        print("[ERROR] Upload failed. No image sent.")
+    url = upload_image_to_imgbb(img_path)
+    if not url:
+        print("[ERROR] upload failed — abort send")
         return
 
     try:
         client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH"))
-        message = client.messages.create(
-            from_=os.getenv("TWILIO_WHATSAPP"),
-            to=to_number,
-            body="📊 Your scheduled Google Sheet update.",
-            media_url=[image_url]
-        )
-        print(f"[WHATSAPP] Sent to {to_number} | SID: {message.sid}")
+        msg = client.messages.create(from_=os.getenv("TWILIO_WHATSAPP"), to=to_num,
+                                     body="Your scheduled Google Sheet screenshot.", media_url=[url])
+        print(f"[WHATSAPP] Sent SID {msg.sid}")
     except Exception as e:
-        print(f"[ERROR] Twilio send failed: {e}")
+        print(f"[ERROR] Twilio failed: {e}")

@@ -11,38 +11,38 @@ def schedule_user(sheet_url, number, num_days, times, crop_box):
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start_date": datetime.now().date(),
-            "end_date": datetime.now().date() + timedelta(days=num_days - 1),
+            "start": datetime.now().date(),
+            "end": datetime.now().date() + timedelta(days=num_days - 1),
             "times": times,
             "crop_box": crop_box
         }
-        print(f"[SCHEDULE] Scheduled {number} at {times} for {num_days} days.")
+    print(f"[SCHEDULE] {number} scheduled from {users[number]['start']} to {users[number]['end']} at {times}")
 
 def cancel_user(number):
     with lock:
-        if number in users:
-            del users[number]
-            print(f"[CANCEL] Canceled schedule for {number}")
+        removed = users.pop(number, None)
+    print(f"[CANCEL] {'Removed' if removed else 'No schedule for'} {number}")
 
 def run_loop():
+    print("[SCHEDULER] Loop started")
     while True:
         now = datetime.now()
-        current_time = now.strftime("%H:%M")
+        now_str = now.strftime("%H:%M")
         today = now.date()
 
         with lock:
-            for number, config in list(users.items()):
-                if today > config["end_date"]:
-                    print(f"[AUTO REMOVE] {number} expired on {config['end_date']}")
-                    del users[number]
+            for number, cfg in list(users.items()):
+                if today > cfg["end"]:
+                    print(f"[AUTO-REMOVE] {number} expired on {cfg['end']}")
+                    users.pop(number)
                     continue
 
-                if today >= config["start_date"] and current_time in config["times"]:
-                    print(f"[SEND] Sending to {number} at {current_time}")
+                if today >= cfg["start"] and now_str in cfg["times"]:
+                    print(f"[SEND] Trigger for {number} at {now_str}")
                     try:
-                        img_path = take_screenshot(config["sheet_url"], config["crop_box"])
-                        send_whatsapp_image(number, img_path)
+                        path = take_screenshot(cfg["sheet_url"], cfg["crop_box"])
+                        send_whatsapp_image(number, path)
                     except Exception as e:
-                        print(f"[ERROR] Failed for {number}: {e}")
+                        print(f"[ERROR] during send for {number}: {e}")
 
-        time.sleep(1)
+        time.sleep(30)

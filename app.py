@@ -16,7 +16,7 @@ def register():
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
         num_days = int(data['num_days'])
-        times = [t.strip() for t in data['times'].split(',')]
+        times = [t.strip() for t in data['times'].split(',') if t.strip()]
 
         crop_box = (
             int(data['crop_left']),
@@ -25,22 +25,23 @@ def register():
             int(data['crop_bottom'])
         )
 
-        print(f"[REGISTER] {number} for {num_days} days at {times} crop={crop_box}")
+        print(f"[REGISTER] Scheduling {number} for {num_days} days at times {times}, crop={crop_box}")
         schedule_user(sheet_url, number, num_days, times, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
-        print(f"[ERROR] in /register: {e}")
-        return "Failed to schedule.", 500
+        print(f"[ERROR] /register exception: {e}")
+        return f"Failed to schedule — {e}", 500
 
 @app.route('/cancel', methods=['POST'])
 def cancel():
     try:
         number = request.form['whatsapp_number']
+        print(f"[CANCEL REQUEST] for {number}")
         cancel_user(number)
-        return "Schedule canceled."
+        return "Cancelled successfully!"
     except Exception as e:
-        print(f"[ERROR] in /cancel: {e}")
-        return "Failed to cancel.", 500
+        print(f"[ERROR] /cancel exception: {e}")
+        return f"Failed to cancel — {e}", 500
 
 if __name__ == '__main__':
     threading.Thread(target=run_loop, daemon=True).start()
