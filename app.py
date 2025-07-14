@@ -2,12 +2,13 @@ from flask import Flask, request, render_template
 from scheduler import schedule_user, cancel_user, run_loop
 import threading
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", datetime=datetime)
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -17,7 +18,13 @@ def register():
         number = data['whatsapp_number']
         start_date = data['start_date']
         end_date = data['end_date']
-        times = [t.strip() for t in data['times'].split(',')]
+        times_raw = data['times'].split(',')
+        times = []
+
+        for t in times_raw:
+            t = t.strip().upper()
+            dt_obj = datetime.strptime(t, "%I:%M %p")
+            times.append(dt_obj.strftime("%H:%M"))
 
         crop_box = (
             int(data['crop_left']),
@@ -26,7 +33,6 @@ def register():
             int(data['crop_bottom'])
         )
 
-        print(f"[REGISTER] {number}: {start_date} to {end_date}, times {times}, crop={crop_box}")
         schedule_user(sheet_url, number, start_date, end_date, times, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
@@ -38,7 +44,7 @@ def cancel():
     try:
         number = request.form['whatsapp_number']
         cancel_user(number)
-        return "Schedule canceled!"
+        return "Schedule canceled."
     except Exception as e:
         print(f"[ERROR] in /cancel: {e}")
         return "Failed to cancel.", 500
@@ -46,5 +52,4 @@ def cancel():
 if __name__ == '__main__':
     threading.Thread(target=run_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 8080))
-    print("[SCHEDULER] Loop started")
     app.run(host='0.0.0.0', port=port)

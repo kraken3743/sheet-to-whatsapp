@@ -27,7 +27,7 @@ def take_screenshot(sheet_url, crop_box=(20, 130, 1000, 900)):
 
     image = Image.open(screenshot_path)
     cropped_image = image.crop(crop_box)
-    cropped_image_path = "sheet.png"
-    cropped_image.save(cropped_image_path)
+    final_path = "sheet.png"
+    cropped_image.save(final_path)
 
-    return cropped_image_path
+    return final_path

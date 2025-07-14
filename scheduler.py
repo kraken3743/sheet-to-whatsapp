@@ -1,54 +1,51 @@
 import threading
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
 lock = threading.Lock()
 users = {}
 
-def parse_time_12h(t_str):
-    return datetime.strptime(t_str, "%I:%M %p").strftime("%H:%M")
-
-def schedule_user(sheet_url, number, start_date_str, end_date_str, times_12, crop_box):
-    times_24 = [parse_time_12h(t) for t in times_12]
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-
+def schedule_user(sheet_url, number, start_date, end_date, times, crop_box):
+    from datetime import datetime
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start": start_date,
-            "end": end_date,
-            "times": times_24,
+            "start_date": datetime.strptime(start_date, "%Y-%m-%d").date(),
+            "end_date": datetime.strptime(end_date, "%Y-%m-%d").date(),
+            "times": times,
             "crop_box": crop_box
         }
-    print(f"[SCHEDULE] {number}: {start_date} – {end_date} at {times_24}")
+        print(f"[SCHEDULE] Scheduled {number} from {start_date} to {end_date} at {times}")
 
 def cancel_user(number):
     with lock:
         if number in users:
             del users[number]
-            print(f"[CANCEL] Canceled schedule for {number}")
+            print(f"[CANCEL] Canceled {number}")
 
 def run_loop():
+    print("[SCHEDULER] Loop started")
     while True:
         now = datetime.now()
-        current = now.strftime("%H:%M")
+        current_time = now.strftime("%H:%M")
         today = now.date()
 
         with lock:
-            for num, cfg in list(users.items()):
-                if today > cfg["end"]:
-                    print(f"[AUTO-REMOVE] {num} expired on {cfg['end']}")
-                    users.pop(num)
+            for number, cfg in list(users.items()):
+                if today > cfg["end_date"]:
+                    print(f"[AUTO REMOVE] {number} expired on {cfg['end_date']}")
+                    del users[number]
                     continue
-                if cfg["start"] <= today <= cfg["end"] and current in cfg["times"]:
-                    print(f"[SEND] {num} at {current}")
-                    try:
-                        img = take_screenshot(cfg["sheet_url"], cfg["crop_box"])
-                        send_whatsapp_image(num, img)
-                    except Exception as e:
-                        print(f"[ERROR] send failed for {num}: {e}")
+
+                if cfg["start_date"] <= today <= cfg["end_date"]:
+                    if current_time in cfg["times"]:
+                        print(f"[SEND] Sending for {number} at {current_time}")
+                        try:
+                            path = take_screenshot(cfg["sheet_url"], cfg["crop_box"])
+                            send_whatsapp_image(number, path)
+                        except Exception as e:
+                            print(f"[ERROR] {number}: {e}")
 
         time.sleep(60)
