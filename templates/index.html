@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Schedule Sheet to WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
+      font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -16,49 +16,46 @@
     }
 
     .box {
-      background: white;
-      padding: 40px;
-      border-radius: 15px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      width: 400px;
     }
 
     h2 {
       text-align: center;
-      color: #333366;
+      color: #333;
     }
 
     label {
-      font-weight: bold;
-      display: block;
       margin-top: 15px;
+      display: block;
+      font-weight: bold;
     }
 
     input {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 1em;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(to right, #2575fc, #6a11cb);
-      color: white;
-      font-size: 1em;
       margin-top: 20px;
+      width: 100%;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
       border: none;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
     button:hover {
-      background: linear-gradient(to right, #6a11cb, #2575fc);
+      background: linear-gradient(to right, #5a0eb3, #1a5fd8);
     }
   </style>
 </head>
@@ -67,25 +64,25 @@
     <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
       <label>Google Sheet URL:</label>
-      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816">
+      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816"/>
 
       <label>WhatsApp Number:</label>
-      <input type="text" name="whatsapp_number" required>
+      <input type="text" name="whatsapp_number" required />
 
-      <label>Time (24-hour format e.g. 14:30):</label>
-      <input type="text" name="time" required>
+      <label>Time (24hr format HH:MM):</label>
+      <input type="text" name="time" required placeholder="e.g. 14:30"/>
 
       <label>Crop Left (px):</label>
-      <input type="number" name="crop_left" value="20">
+      <input type="number" name="crop_left" value="20" />
 
       <label>Crop Top (px):</label>
-      <input type="number" name="crop_top" value="130">
+      <input type="number" name="crop_top" value="130" />
 
       <label>Crop Right (px):</label>
-      <input type="number" name="crop_right" value="1000">
+      <input type="number" name="crop_right" value="1000" />
 
       <label>Crop Bottom (px):</label>
-      <input type="number" name="crop_bottom" value="900">
+      <input type="number" name="crop_bottom" value="900" />
 
       <button type="submit">Schedule</button>
     </form>
