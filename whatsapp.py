@@ -1,21 +1,21 @@
 import os
-import requests
 from dotenv import load_dotenv
 from twilio.rest import Client
+import requests
 
 load_dotenv()
 
 def upload_image_to_imgbb(image_path):
     try:
-        with open(image_path, "rb") as f:
-            res = requests.post(
+        with open(image_path, "rb") as file:
+            response = requests.post(
                 "https://api.imgbb.com/1/upload",
                 data={"key": os.getenv("IMGBB_API_KEY")},
-                files={"image": f}
+                files={"image": file}
             )
-        return res.json()["data"]["url"]
+        return response.json()["data"]["url"]
     except Exception as e:
-        print(f"[ERROR] Upload to imgbb failed: {e}")
+        print(f"[ERROR] Upload failed: {e}")
         return None
 
 def send_whatsapp_image(to_number, image_path):
@@ -24,7 +24,7 @@ def send_whatsapp_image(to_number, image_path):
 
     image_url = upload_image_to_imgbb(image_path)
     if not image_url:
-        print("[ERROR] Upload failed. Skipping message.")
+        print("[ERROR] Upload failed. No image sent.")
         return
 
     try:
@@ -32,9 +32,9 @@ def send_whatsapp_image(to_number, image_path):
         message = client.messages.create(
             from_=os.getenv("TWILIO_WHATSAPP"),
             to=to_number,
-            body="📊 Here's your scheduled Google Sheet screenshot.",
+            body="📊 Here is your Google Sheet update!",
             media_url=[image_url]
         )
-        print(f"[WHATSAPP] Message sent to {to_number}")
+        print(f"[WHATSAPP] Sent to {to_number}")
     except Exception as e:
-        print(f"[ERROR] Twilio send failed: {e}")
+        print(f"[ERROR] Twilio failed: {e}")
