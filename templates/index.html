@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Schedule Sheet to WhatsApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -14,12 +15,13 @@
       margin: 0;
     }
 
-    .container {
+    .box {
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      width: 400px;
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
     h2 {
@@ -28,68 +30,64 @@
     }
 
     label {
+      font-weight: bold;
       display: block;
       margin-top: 15px;
-      font-weight: bold;
     }
 
     input {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      font-size: 1em;
     }
 
     button {
-      margin-top: 20px;
       width: 100%;
       padding: 12px;
       background: linear-gradient(to right, #2575fc, #6a11cb);
       color: white;
+      font-size: 1em;
+      margin-top: 20px;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
 
     button:hover {
-      opacity: 0.9;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Schedule Sheet</h2>
+  <div class="box">
+    <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
-      <label>Sheet URL</label>
-      <input type="text" name="sheet_url" required
-        value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
+      <label>Google Sheet URL:</label>
+      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816">
 
-      <label>WhatsApp Number</label>
-      <input type="text" name="whatsapp_number" required placeholder="+91XXXXXXXXXX">
+      <label>WhatsApp Number:</label>
+      <input type="text" name="whatsapp_number" required>
 
-      <label>Time (HH:MM 24hr)</label>
-      <input type="text" name="time" required placeholder="14:30">
+      <label>Time (24-hour format e.g. 14:30):</label>
+      <input type="text" name="time" required>
 
-      <label>Crop Left</label>
+      <label>Crop Left (px):</label>
       <input type="number" name="crop_left" value="20">
 
-      <label>Crop Top</label>
+      <label>Crop Top (px):</label>
       <input type="number" name="crop_top" value="130">
 
-      <label>Crop Right</label>
+      <label>Crop Right (px):</label>
       <input type="number" name="crop_right" value="1000">
 
-      <label>Crop Bottom</label>
+      <label>Crop Bottom (px):</label>
       <input type="number" name="crop_bottom" value="900">
 
       <button type="submit">Schedule</button>
-    </form>
-    <form method="POST" action="/cancel">
-      <label>Cancel (WhatsApp Number)</label>
-      <input type="text" name="whatsapp_number" required placeholder="+91XXXXXXXXXX">
-      <button type="submit">Cancel Schedule</button>
     </form>
   </div>
 </body>
