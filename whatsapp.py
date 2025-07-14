@@ -13,8 +13,7 @@ def upload_image_to_imgbb(image_path):
                 data={"key": os.getenv("IMGBB_API_KEY")},
                 files={"image": f}
             )
-        image_url = res.json()["data"]["url"]
-        return image_url
+        return res.json()["data"]["url"]
     except Exception as e:
         print(f"[ERROR] Upload failed: {e}")
         return None
@@ -33,7 +32,7 @@ def send_whatsapp_image(to_number, image_path):
         message = client.messages.create(
             from_=os.getenv("TWILIO_WHATSAPP"),
             to=to_number,
-            body="📊 Here is your scheduled Google Sheet update.",
+            body="📊 Your scheduled Google Sheet update.",
             media_url=[image_url]
         )
         print(f"[WHATSAPP] Sent to {to_number} | SID: {message.sid}")

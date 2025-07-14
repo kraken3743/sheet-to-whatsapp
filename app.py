@@ -15,7 +15,6 @@ def register():
         data = request.form
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
-        start_date = data['start_date']
         num_days = int(data['num_days'])
         times = [t.strip() for t in data['times'].split(',')]
 
@@ -26,8 +25,8 @@ def register():
             int(data['crop_bottom'])
         )
 
-        print(f"[REGISTER] {number} from {start_date} for {num_days} days at {times} crop={crop_box}")
-        schedule_user(sheet_url, number, start_date, num_days, times, crop_box)
+        print(f"[REGISTER] {number} for {num_days} days at {times} crop={crop_box}")
+        schedule_user(sheet_url, number, num_days, times, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")

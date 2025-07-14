@@ -7,16 +7,16 @@ from whatsapp import send_whatsapp_image
 lock = threading.Lock()
 users = {}
 
-def schedule_user(sheet_url, number, start_date, num_days, times, crop_box):
+def schedule_user(sheet_url, number, num_days, times, crop_box):
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start_date": datetime.strptime(start_date, "%Y-%m-%d").date(),
-            "end_date": datetime.strptime(start_date, "%Y-%m-%d").date() + timedelta(days=num_days - 1),
+            "start_date": datetime.now().date(),
+            "end_date": datetime.now().date() + timedelta(days=num_days - 1),
             "times": times,
             "crop_box": crop_box
         }
-        print(f"[SCHEDULE] Scheduled {number} at {times} from {start_date} for {num_days} days.")
+        print(f"[SCHEDULE] Scheduled {number} at {times} for {num_days} days.")
 
 def cancel_user(number):
     with lock:
@@ -38,11 +38,11 @@ def run_loop():
                     continue
 
                 if today >= config["start_date"] and current_time in config["times"]:
-                    print(f"[SEND] Triggering send for {number} at {current_time}")
+                    print(f"[SEND] Sending to {number} at {current_time}")
                     try:
                         img_path = take_screenshot(config["sheet_url"], config["crop_box"])
                         send_whatsapp_image(number, img_path)
                     except Exception as e:
-                        print(f"[ERROR] Failed to send screenshot to {number}: {e}")
+                        print(f"[ERROR] Failed for {number}: {e}")
 
         time.sleep(1)
