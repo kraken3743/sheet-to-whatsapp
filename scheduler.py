@@ -7,16 +7,23 @@ from whatsapp import send_whatsapp_image
 lock = threading.Lock()
 users = {}
 
-def schedule_user(sheet_url, number, num_days, times, crop_box):
+def parse_time_12h(t_str):
+    return datetime.strptime(t_str, "%I:%M %p").strftime("%H:%M")
+
+def schedule_user(sheet_url, number, start_date_str, end_date_str, times_12, crop_box):
+    times_24 = [parse_time_12h(t) for t in times_12]
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
     with lock:
         users[number] = {
             "sheet_url": sheet_url,
-            "start_date": datetime.now().date(),
-            "end_date": datetime.now().date() + timedelta(days=num_days - 1),
-            "times": times,
+            "start": start_date,
+            "end": end_date,
+            "times": times_24,
             "crop_box": crop_box
         }
-        print(f"[SCHEDULE] Scheduled {number} at {times} for {num_days} days.")
+    print(f"[SCHEDULE] {number}: {start_date} – {end_date} at {times_24}")
 
 def cancel_user(number):
     with lock:
@@ -27,22 +34,21 @@ def cancel_user(number):
 def run_loop():
     while True:
         now = datetime.now()
-        current_time = now.strftime("%H:%M")
+        current = now.strftime("%H:%M")
         today = now.date()
 
         with lock:
-            for number, config in list(users.items()):
-                if today > config["end_date"]:
-                    print(f"[AUTO REMOVE] {number} expired on {config['end_date']}")
-                    del users[number]
+            for num, cfg in list(users.items()):
+                if today > cfg["end"]:
+                    print(f"[AUTO-REMOVE] {num} expired on {cfg['end']}")
+                    users.pop(num)
                     continue
-
-                if today >= config["start_date"] and current_time in config["times"]:
-                    print(f"[SEND] Triggering send for {number} at {current_time}")
+                if cfg["start"] <= today <= cfg["end"] and current in cfg["times"]:
+                    print(f"[SEND] {num} at {current}")
                     try:
-                        img_path = take_screenshot(config["sheet_url"], config["crop_box"])
-                        send_whatsapp_image(number, img_path)
+                        img = take_screenshot(cfg["sheet_url"], cfg["crop_box"])
+                        send_whatsapp_image(num, img)
                     except Exception as e:
-                        print(f"[ERROR] Failed to send screenshot to {number}: {e}")
+                        print(f"[ERROR] send failed for {num}: {e}")
 
         time.sleep(60)

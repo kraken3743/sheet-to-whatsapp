@@ -15,7 +15,8 @@ def register():
         data = request.form
         sheet_url = data['sheet_url']
         number = data['whatsapp_number']
-        num_days = int(data['num_days'])
+        start_date = data['start_date']
+        end_date = data['end_date']
         times = [t.strip() for t in data['times'].split(',')]
 
         crop_box = (
@@ -25,8 +26,8 @@ def register():
             int(data['crop_bottom'])
         )
 
-        print(f"[REGISTER] {number} for {num_days} days at {times} crop={crop_box}")
-        schedule_user(sheet_url, number, num_days, times, crop_box)
+        print(f"[REGISTER] {number}: {start_date} to {end_date}, times {times}, crop={crop_box}")
+        schedule_user(sheet_url, number, start_date, end_date, times, crop_box)
         return "Scheduled successfully!"
     except Exception as e:
         print(f"[ERROR] in /register: {e}")
@@ -37,7 +38,7 @@ def cancel():
     try:
         number = request.form['whatsapp_number']
         cancel_user(number)
-        return "Schedule canceled."
+        return "Schedule canceled!"
     except Exception as e:
         print(f"[ERROR] in /cancel: {e}")
         return "Failed to cancel.", 500
