@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from scheduler import schedule_user, run_scheduler
+from scheduler import schedule_user, run_loop
 import threading
 import os
 
@@ -11,29 +11,38 @@ def index():
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.form
-    number = data['whatsapp_number']
-    times = [t.strip() for t in data['times'].split(',') if t.strip()]
-    crop_box = (
-        int(data['crop_left']),
-        int(data['crop_top']),
-        int(data['crop_right']),
-        int(data['crop_bottom'])
-    )
-    custom_url = data.get('custom_url', '').strip() or None
+    try:
+        data = request.form
+        sheet_url = data.get('sheet_url')
+        number = data['whatsapp_number']
+        times = [t.strip() for t in data['times'].split(',') if t.strip()]
 
-    print(f"[REGISTER] {number} at {times}, custom_url={custom_url}, crop={crop_box}")
-    schedule_user(number, times, crop_box, custom_url)
-    return "Scheduled successfully!"
+        crop_box = (
+            int(data['crop_left']),
+            int(data['crop_top']),
+            int(data['crop_right']),
+            int(data['crop_bottom'])
+        )
+
+        schedule_user(sheet_url, number, times, crop_box)
+        return " Scheduled successfully!"
+    except Exception as e:
+        print(f"[ERROR] in /register: {e}")
+        return " Failed to schedule.", 500
 
 @app.route('/cancel', methods=['POST'])
 def cancel():
-    number = request.form['whatsapp_number']
-    from scheduler import cancel_user
-    cancel_user(number)
-    return "Schedule cancelled."
+    try:
+        number = request.form['whatsapp_number']
+        from scheduler import cancel_user
+        cancel_user(number)
+        return "🗑️ Schedule canceled."
+    except Exception as e:
+        print(f"[ERROR] in /cancel: {e}")
+        return " Failed to cancel.", 500
 
 if __name__ == '__main__':
-    threading.Thread(target=run_scheduler, daemon=True).start()
+    threading.Thread(target=run_loop, daemon=True).start()
     port = int(os.environ.get("PORT", 8080))
+    print("[SCHEDULER] Loop started")
     app.run(host='0.0.0.0', port=port)

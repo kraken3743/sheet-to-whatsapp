@@ -1,41 +1,51 @@
-import time
-from datetime import datetime
-import pytz
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
+from datetime import datetime
+import time
+import pytz
+import threading
 
+lock = threading.Lock()
 users = {}
-lock = None
 
-DEFAULT_URLS = [
+DEFAULT_SHEETS = [
     "https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit#gid=909429816",
     "https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=862699111#gid=862699111"
 ]
 
-def schedule_user(number, times, crop_box, custom_url=None):
-    users[number] = {
-        "times": times,
-        "crop_box": crop_box,
-        "custom_url": custom_url
-    }
+def schedule_user(optional_sheet_url, number, times, crop_box):
+    with lock:
+        users[number] = {
+            "extra_url": optional_sheet_url.strip() if optional_sheet_url else None,
+            "times": times,
+            "crop_box": crop_box
+        }
+        print(f"[SCHEDULE] {number} scheduled for {times} with crop {crop_box}")
 
 def cancel_user(number):
-    if number in users:
-        del users[number]
+    with lock:
+        if number in users:
+            del users[number]
+            print(f"[CANCEL] Canceled for {number}")
 
-def run_scheduler():
-    print("[SCHEDULER] Loop started")
+def run_loop():
+    tz = pytz.timezone("Asia/Kolkata")
     while True:
-        now = datetime.now(pytz.timezone("Asia/Kolkata"))
+        now = datetime.now(tz)
         current_time = now.strftime("%H:%M")
-        for number, config in list(users.items()):
-            if current_time in config["times"]:
-                urls = DEFAULT_URLS.copy()
-                if config["custom_url"]:
-                    urls.append(config["custom_url"])
-                for url in urls:
+
+        with lock:
+            for number, config in list(users.items()):
+                if current_time in config['times']:
+                    print(f"[SEND] Triggering {number} at {current_time}")
                     try:
-                        img_path = take_screenshot(url, config["crop_box"])
-                        send_whatsapp_image(number, img_path)
+                        crop_box = config["crop_box"]
+                        for url in DEFAULT_SHEETS:
+                            path = take_screenshot(url, crop_box)
+                            send_whatsapp_image(number, path)
+                        if config["extra_url"]:
+                            path = take_screenshot(config["extra_url"], crop_box)
+                            send_whatsapp_image(number, path)
                     except Exception as e:
-                        print(f"[ERROR] sending image to {number}: {e}")
+                        print(f"[ERROR] Failed to send to {number}: {e}")
+        time.sleep(30)

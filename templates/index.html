@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Schedule Sheet to WhatsApp</title>
+  <title>Schedule Google Sheet to WhatsApp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -61,14 +61,14 @@
   <div class="container">
     <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
+      <label>Extra Google Sheet URL (optional):</label>
+      <input type="text" name="sheet_url" placeholder="https://...">
+
       <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
 
-      <label>Time(s) (comma separated in 24hr format e.g. 09:30,22:15):</label>
+      <label>Time(s) (24hr format, e.g. 09:45,23:15):</label>
       <input type="text" name="times" required>
-
-      <label>Optional Custom Google Sheet URL:</label>
-      <input type="text" name="custom_url">
 
       <label>Crop Left (px):</label>
       <input type="number" name="crop_left" value="30">
@@ -80,10 +80,4 @@
       <input type="number" name="crop_right" value="1650">
 
       <label>Crop Bottom (px):</label>
-      <input type="number" name="crop_bottom" value="1250">
-
-      <button type="submit">Schedule</button>
-    </form>
-  </div>
-</body>
-</html>
+      <input type="number" name="crop_bottom" value=_
