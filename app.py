@@ -18,9 +18,9 @@ def register():
 
     crop_box = (
         int(data.get('crop_left', 30)),
-        int(data.get('crop_top', 140)),
+        int(data.get('crop_top', 150)),
         int(data.get('crop_right', 1300)),
-        int(data.get('crop_bottom', 1200))
+        int(data.get('crop_bottom', 1250))
     )
 
     print(f"[REGISTER] Scheduling for {number} at {times} with crop {crop_box}")
