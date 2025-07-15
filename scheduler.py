@@ -4,32 +4,42 @@ from datetime import datetime
 from screenshot import take_screenshot
 from whatsapp import send_whatsapp_image
 
-users = []
 lock = threading.Lock()
+users = {}
 
-def schedule_user(sheet_urls, number, times, crop_box):
+DEFAULT_SHEET_URLS = [
+    "https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit#gid=909429816",
+    "https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=862699111#gid=862699111"
+]
+
+def schedule_user(number, times, crop_box, custom_url):
     with lock:
-        users.append({
-            "sheet_urls": sheet_urls,
-            "number": number,
+        all_urls = DEFAULT_SHEET_URLS.copy()
+        if custom_url:
+            all_urls.append(custom_url)
+
+        users[number] = {
             "times": times,
-            "crop_box": crop_box
-        })
-        print(f"[SCHEDULE] Added {number} at {times} for sheets: {sheet_urls}")
+            "crop_box": crop_box,
+            "sheet_urls": all_urls
+        }
+        print(f"[SCHEDULE] {number} at {times} for {len(all_urls)} URLs")
 
 def run_loop():
     print("[SCHEDULER] Loop started")
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M")
+
         with lock:
-            for user in users:
-                if current_time in user["times"]:
-                    print(f"[SEND] Triggering for {user['number']} at {current_time}")
-                    for url in user["sheet_urls"]:
+            for number, config in users.items():
+                if current_time in config["times"]:
+                    for url in config["sheet_urls"]:
                         try:
-                            image_path = take_screenshot(url, user["crop_box"])
-                            send_whatsapp_image(user["number"], image_path)
+                            print(f"[SEND] Sending to {number} - {url}")
+                            img_path = take_screenshot(url, config["crop_box"])
+                            send_whatsapp_image(number, img_path)
                         except Exception as e:
-                            print(f"[ERROR] {user['number']} | {e}")
+                            print(f"[ERROR] Sending to {number}: {e}")
+
         time.sleep(60)

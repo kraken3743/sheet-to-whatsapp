@@ -11,7 +11,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
     }
 
@@ -55,23 +55,20 @@
     button:hover {
       background: linear-gradient(to right, #5c0ec1, #1e65e2);
     }
-
-    .note {
-      font-size: 0.85em;
-      color: #555;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Schedule Screenshots to WhatsApp</h2>
+    <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
       <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
 
-      <label>Time(s) (24hr format, comma separated e.g. 09:45,23:15):</label>
+      <label>Time(s) (comma separated in 24hr e.g. 09:45,23:15):</label>
       <input type="text" name="times" required>
+
+      <label>Additional Google Sheet URL (optional):</label>
+      <input type="text" name="custom_sheet_url">
 
       <label>Crop Left (px):</label>
       <input type="number" name="crop_left" value="30">
@@ -84,8 +81,6 @@
 
       <label>Crop Bottom (px):</label>
       <input type="number" name="crop_bottom" value="1250">
-
-      <p class="note">ℹBoth Sheet 1 and Sheet 2 will be screenshotted and sent.</p>
 
       <button type="submit">Schedule</button>
     </form>
