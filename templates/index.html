@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Schedule Google Sheet to WhatsApp</title>
+  <title>Schedule Sheet to WhatsApp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -14,6 +14,7 @@
       height: 100vh;
       margin: 0;
     }
+
     .container {
       background: white;
       padding: 30px;
@@ -22,15 +23,18 @@
       max-width: 600px;
       width: 100%;
     }
+
     h2 {
       text-align: center;
       color: #333366;
     }
+
     label {
       font-weight: bold;
       margin-top: 12px;
       display: block;
     }
+
     input, button {
       width: 100%;
       padding: 10px;
@@ -38,6 +42,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+
     button {
       background: linear-gradient(to right, #6a11cb, #2575fc);
       color: white;
@@ -46,6 +51,7 @@
       margin-top: 20px;
       cursor: pointer;
     }
+
     button:hover {
       background: linear-gradient(to right, #5c0ec1, #1e65e2);
     }
@@ -58,8 +64,11 @@
       <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
 
-      <label>Time(s) (comma separated, 24hr e.g. 09:45,18:30):</label>
+      <label>Time(s) (comma separated in 24hr format e.g. 09:30,22:15):</label>
       <input type="text" name="times" required>
+
+      <label>Optional Custom Google Sheet URL:</label>
+      <input type="text" name="custom_url">
 
       <label>Crop Left (px):</label>
       <input type="number" name="crop_left" value="30">
@@ -68,21 +77,12 @@
       <input type="number" name="crop_top" value="165">
 
       <label>Crop Right (px):</label>
-      <input type="number" name="crop_right" value="160">
+      <input type="number" name="crop_right" value="1650">
 
       <label>Crop Bottom (px):</label>
       <input type="number" name="crop_bottom" value="1250">
 
-      <label>Optional Custom Google Sheet URL:</label>
-      <input type="text" name="custom_url" placeholder="Optional sheet URL">
-
       <button type="submit">Schedule</button>
-    </form>
-    <hr>
-    <form method="POST" action="/cancel">
-      <label>Cancel Schedule (enter WhatsApp number):</label>
-      <input type="text" name="whatsapp_number" required>
-      <button type="submit">Cancel</button>
     </form>
   </div>
 </body>
