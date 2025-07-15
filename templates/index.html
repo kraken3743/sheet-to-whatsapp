@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Schedule Sheet to WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Schedule Screenshot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
+      font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
 
-    .box {
-      background: #fff;
+    .form-box {
+      background: white;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
     }
 
     h2 {
@@ -29,60 +31,63 @@
     }
 
     label {
-      margin-top: 15px;
+      margin-top: 12px;
       display: block;
       font-weight: bold;
     }
 
-    input {
+    input[type="text"],
+    input[type="number"],
+    input[type="time"] {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
+      margin-top: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     button {
       margin-top: 20px;
       width: 100%;
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      color: white;
-      border: none;
       padding: 12px;
-      border-radius: 6px;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 8px;
+      color: white;
       font-size: 16px;
       cursor: pointer;
     }
 
     button:hover {
-      background: linear-gradient(to right, #5a0eb3, #1a5fd8);
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="form-box">
     <h2>Schedule Screenshot</h2>
-    <form method="POST" action="/register">
-      <label>Google Sheet URL:</label>
-      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816"/>
+    <form action="/register" method="POST">
+      <label>Sheet URL</label>
+      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
 
-      <label>WhatsApp Number:</label>
-      <input type="text" name="whatsapp_number" required />
+      <label>WhatsApp Number</label>
+      <input type="text" name="whatsapp_number" required placeholder="+91xxxxxxxxxx">
 
-      <label>Time (24hr format HH:MM):</label>
-      <input type="text" name="time" required placeholder="e.g. 14:30"/>
+      <label>Time (24-hr HH:MM)</label>
+      <input type="time" name="time" required>
 
-      <label>Crop Left (px):</label>
-      <input type="number" name="crop_left" value="20" />
+      <label>Crop Left (px)</label>
+      <input type="number" name="crop_left" value="20">
 
-      <label>Crop Top (px):</label>
-      <input type="number" name="crop_top" value="130" />
+      <label>Crop Top (px)</label>
+      <input type="number" name="crop_top" value="130">
 
-      <label>Crop Right (px):</label>
-      <input type="number" name="crop_right" value="1000" />
+      <label>Crop Right (px)</label>
+      <input type="number" name="crop_right" value="1000">
 
-      <label>Crop Bottom (px):</label>
-      <input type="number" name="crop_bottom" value="900" />
+      <label>Crop Bottom (px)</label>
+      <input type="number" name="crop_bottom" value="900">
 
       <button type="submit">Schedule</button>
     </form>
