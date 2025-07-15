@@ -59,24 +59,30 @@
 </head>
 <body>
   <div class="container">
-    <h2>Schedule Sheet Screenshot</h2>
+    <h2>Schedule Screenshot</h2>
     <form method="POST" action="/register">
       <label>Google Sheet URL:</label>
-      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit?gid=909429816#gid=909429816">
+      <input type="text" name="sheet_url" required value="https://docs.google.com/spreadsheets/d/1_QSvPyOCCP43AZ6eZqNIm4OmJb8ds9EB4UD88C2-Sb4/edit#gid=909429816">
 
       <label>WhatsApp Number:</label>
       <input type="text" name="whatsapp_number" required>
 
-      <label>Time(s) (comma-separated, 24-hr format):</label>
-      <input type="text" name="times" required placeholder="e.g. 08:30,14:00">
+      <label>Time(s) (comma separated in 24hr e.g. 09:45,23:15):</label>
+      <input type="text" name="times" required>
+
+      <label>Crop Left (px):</label>
+      <input type="number" name="crop_left" value="30">
+
+      <label>Crop Top (px):</label>
+      <input type="number" name="crop_top" value="140">
+
+      <label>Crop Right (px):</label>
+      <input type="number" name="crop_right" value="1300">
+
+      <label>Crop Bottom (px):</label>
+      <input type="number" name="crop_bottom" value="1200">
 
       <button type="submit">Schedule</button>
-    </form>
-
-    <form method="POST" action="/cancel" style="margin-top: 30px;">
-      <label>Cancel Schedule - WhatsApp Number:</label>
-      <input type="text" name="whatsapp_number" required>
-      <button type="submit">Cancel</button>
     </form>
   </div>
 </body>
